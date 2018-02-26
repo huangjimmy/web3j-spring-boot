@@ -70,6 +70,7 @@ public class Controller {
         //cps.transferEventObservable(DefaultBlockParameter.valueOf(BigInteger.valueOf(5119110)),
         //            DefaultBlockParameterName.LATEST);
        transferEventResponseObservable.subscribe(event -> {
+           //if block hash, block number, tx id are needed, pls customize transferEventObservable of CPSTestToken1.java.
            System.out.println(event.from + " transfer "+ event.value + " to "+event.to);
        });
 
