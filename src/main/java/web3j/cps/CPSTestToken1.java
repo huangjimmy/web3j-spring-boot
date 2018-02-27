@@ -57,6 +57,11 @@ public class CPSTestToken1 extends Contract {
         ArrayList<LockFundExEventResponse> responses = new ArrayList<LockFundExEventResponse>(valueList.size());
         for (EventValues eventValues : valueList) {
             LockFundExEventResponse typedResponse = new LockFundExEventResponse();
+
+            typedResponse.blockHash = transactionReceipt.getBlockHash();
+            typedResponse.blockNumber = transactionReceipt.getBlockNumber();
+            typedResponse.txnHash = transactionReceipt.getTransactionHash();
+
             typedResponse.from = (String) eventValues.getIndexedValues().get(0).getValue();
             typedResponse.deadline = (BigInteger) eventValues.getNonIndexedValues().get(0).getValue();
             typedResponse.amount = (BigInteger) eventValues.getNonIndexedValues().get(1).getValue();
@@ -76,6 +81,11 @@ public class CPSTestToken1 extends Contract {
             public LockFundExEventResponse call(Log log) {
                 EventValues eventValues = extractEventParameters(event, log);
                 LockFundExEventResponse typedResponse = new LockFundExEventResponse();
+
+                typedResponse.blockHash = log.getBlockHash();
+                typedResponse.blockNumber = log.getBlockNumber();
+                typedResponse.txnHash = log.getTransactionHash();
+
                 typedResponse.from = (String) eventValues.getIndexedValues().get(0).getValue();
                 typedResponse.deadline = (BigInteger) eventValues.getNonIndexedValues().get(0).getValue();
                 typedResponse.amount = (BigInteger) eventValues.getNonIndexedValues().get(1).getValue();
@@ -92,6 +102,11 @@ public class CPSTestToken1 extends Contract {
         ArrayList<UnlockFundExEventResponse> responses = new ArrayList<UnlockFundExEventResponse>(valueList.size());
         for (EventValues eventValues : valueList) {
             UnlockFundExEventResponse typedResponse = new UnlockFundExEventResponse();
+
+            typedResponse.blockHash = transactionReceipt.getBlockHash();
+            typedResponse.blockNumber = transactionReceipt.getBlockNumber();
+            typedResponse.txnHash = transactionReceipt.getTransactionHash();
+
             typedResponse.from = (String) eventValues.getIndexedValues().get(0).getValue();
             typedResponse.cycle = (BigInteger) eventValues.getNonIndexedValues().get(0).getValue();
             typedResponse.unlockTimestamp = (BigInteger) eventValues.getNonIndexedValues().get(1).getValue();
@@ -113,6 +128,11 @@ public class CPSTestToken1 extends Contract {
             public UnlockFundExEventResponse call(Log log) {
                 EventValues eventValues = extractEventParameters(event, log);
                 UnlockFundExEventResponse typedResponse = new UnlockFundExEventResponse();
+
+                typedResponse.blockHash = log.getBlockHash();
+                typedResponse.blockNumber = log.getBlockNumber();
+                typedResponse.txnHash = log.getTransactionHash();
+
                 typedResponse.from = (String) eventValues.getIndexedValues().get(0).getValue();
                 typedResponse.cycle = (BigInteger) eventValues.getNonIndexedValues().get(0).getValue();
                 typedResponse.unlockTimestamp = (BigInteger) eventValues.getNonIndexedValues().get(1).getValue();
@@ -131,6 +151,11 @@ public class CPSTestToken1 extends Contract {
         ArrayList<LockFundEventResponse> responses = new ArrayList<LockFundEventResponse>(valueList.size());
         for (EventValues eventValues : valueList) {
             LockFundEventResponse typedResponse = new LockFundEventResponse();
+
+            typedResponse.blockHash = transactionReceipt.getBlockHash();
+            typedResponse.blockNumber = transactionReceipt.getBlockNumber();
+            typedResponse.txnHash = transactionReceipt.getTransactionHash();
+
             typedResponse.from = (String) eventValues.getIndexedValues().get(0).getValue();
             typedResponse.deadline = (BigInteger) eventValues.getNonIndexedValues().get(0).getValue();
             typedResponse.amount = (BigInteger) eventValues.getNonIndexedValues().get(1).getValue();
@@ -150,6 +175,11 @@ public class CPSTestToken1 extends Contract {
             public LockFundEventResponse call(Log log) {
                 EventValues eventValues = extractEventParameters(event, log);
                 LockFundEventResponse typedResponse = new LockFundEventResponse();
+
+                typedResponse.blockHash = log.getBlockHash();
+                typedResponse.blockNumber = log.getBlockNumber();
+                typedResponse.txnHash = log.getTransactionHash();
+
                 typedResponse.from = (String) eventValues.getIndexedValues().get(0).getValue();
                 typedResponse.deadline = (BigInteger) eventValues.getNonIndexedValues().get(0).getValue();
                 typedResponse.amount = (BigInteger) eventValues.getNonIndexedValues().get(1).getValue();
@@ -166,6 +196,11 @@ public class CPSTestToken1 extends Contract {
         ArrayList<UnlockFundEventResponse> responses = new ArrayList<UnlockFundEventResponse>(valueList.size());
         for (EventValues eventValues : valueList) {
             UnlockFundEventResponse typedResponse = new UnlockFundEventResponse();
+
+            typedResponse.blockHash = transactionReceipt.getBlockHash();
+            typedResponse.blockNumber = transactionReceipt.getBlockNumber();
+            typedResponse.txnHash = transactionReceipt.getTransactionHash();
+
             typedResponse.from = (String) eventValues.getIndexedValues().get(0).getValue();
             typedResponse.deadline = (BigInteger) eventValues.getNonIndexedValues().get(0).getValue();
             typedResponse.amount = (BigInteger) eventValues.getNonIndexedValues().get(1).getValue();
@@ -185,6 +220,11 @@ public class CPSTestToken1 extends Contract {
             public UnlockFundEventResponse call(Log log) {
                 EventValues eventValues = extractEventParameters(event, log);
                 UnlockFundEventResponse typedResponse = new UnlockFundEventResponse();
+
+                typedResponse.blockHash = log.getBlockHash();
+                typedResponse.blockNumber = log.getBlockNumber();
+                typedResponse.txnHash = log.getTransactionHash();
+
                 typedResponse.from = (String) eventValues.getIndexedValues().get(0).getValue();
                 typedResponse.deadline = (BigInteger) eventValues.getNonIndexedValues().get(0).getValue();
                 typedResponse.amount = (BigInteger) eventValues.getNonIndexedValues().get(1).getValue();
@@ -201,6 +241,11 @@ public class CPSTestToken1 extends Contract {
         ArrayList<TransferEventResponse> responses = new ArrayList<TransferEventResponse>(valueList.size());
         for (EventValues eventValues : valueList) {
             TransferEventResponse typedResponse = new TransferEventResponse();
+
+            typedResponse.blockHash = transactionReceipt.getBlockHash();
+            typedResponse.blockNumber = transactionReceipt.getBlockNumber();
+            typedResponse.txnHash = transactionReceipt.getTransactionHash();
+
             typedResponse.from = (String) eventValues.getIndexedValues().get(0).getValue();
             typedResponse.to = (String) eventValues.getIndexedValues().get(1).getValue();
             typedResponse.value = (BigInteger) eventValues.getNonIndexedValues().get(0).getValue();
@@ -219,7 +264,13 @@ public class CPSTestToken1 extends Contract {
             @Override
             public TransferEventResponse call(Log log) {
                 EventValues eventValues = extractEventParameters(event, log);
+
                 TransferEventResponse typedResponse = new TransferEventResponse();
+
+                typedResponse.blockHash = log.getBlockHash();
+                typedResponse.blockNumber = log.getBlockNumber();
+                typedResponse.txnHash = log.getTransactionHash();
+
                 typedResponse.from = (String) eventValues.getIndexedValues().get(0).getValue();
                 typedResponse.to = (String) eventValues.getIndexedValues().get(1).getValue();
                 typedResponse.value = (BigInteger) eventValues.getNonIndexedValues().get(0).getValue();
@@ -493,7 +544,15 @@ public class CPSTestToken1 extends Contract {
         return new CPSTestToken1(contractAddress, web3j, transactionManager, gasPrice, gasLimit);
     }
 
-    public static class LockFundExEventResponse {
+    public static class EventResponse {
+        public String txnHash;
+
+        public String blockHash;
+
+        public BigInteger blockNumber;
+    }
+
+    public static class LockFundExEventResponse extends EventResponse {
         public String from;
 
         public BigInteger deadline;
@@ -501,7 +560,7 @@ public class CPSTestToken1 extends Contract {
         public BigInteger amount;
     }
 
-    public static class UnlockFundExEventResponse {
+    public static class UnlockFundExEventResponse extends EventResponse {
         public String from;
 
         public BigInteger cycle;
@@ -513,7 +572,7 @@ public class CPSTestToken1 extends Contract {
         public BigInteger unlockAmount;
     }
 
-    public static class LockFundEventResponse {
+    public static class LockFundEventResponse extends EventResponse {
         public String from;
 
         public BigInteger deadline;
@@ -521,7 +580,7 @@ public class CPSTestToken1 extends Contract {
         public BigInteger amount;
     }
 
-    public static class UnlockFundEventResponse {
+    public static class UnlockFundEventResponse extends EventResponse {
         public String from;
 
         public BigInteger deadline;
@@ -530,7 +589,7 @@ public class CPSTestToken1 extends Contract {
     }
 
 
-    public static class TransferEventResponse {
+    public static class TransferEventResponse extends EventResponse {
         public String from;
 
         public String to;
@@ -538,7 +597,7 @@ public class CPSTestToken1 extends Contract {
         public BigInteger value;
     }
 
-    public static class ApprovalEventResponse {
+    public static class ApprovalEventResponse extends EventResponse {
         public String owner;
 
         public String spender;

@@ -71,11 +71,11 @@ public class Controller {
         //            DefaultBlockParameterName.LATEST);
        transferEventResponseObservable.subscribe(event -> {
            //if block hash, block number, tx id are needed, pls customize transferEventObservable of CPSTestToken1.java.
-           System.out.println(event.from + " transfer "+ event.value + " to "+event.to);
+           System.out.println("\nblock number: "+event.blockNumber+" block hash:"+event.blockHash+" txn:"+event.txnHash+"\n "+event.from + " transfer "+ event.value + " to "+event.to);
        });
 
         unlockFundExEventResponseObservable.subscribe(event -> {
-            System.out.println(event.from + " unlock "+event.unlockAmount + " at "+event.unlockTimestamp +" deadline="+event.deadline);
+            System.out.println("\nblock number: "+event.blockNumber+" block hash:"+event.blockHash+" txn:"+event.txnHash+"\n "+event.from + " unlock "+event.unlockAmount + " at "+event.unlockTimestamp +" deadline="+event.deadline);
        });
     }
 
