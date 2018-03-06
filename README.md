@@ -91,7 +91,7 @@ for (EthBlock.TransactionResult transactionResult : ethBlock.getBlock().getTrans
             Address address = CPSDecoder.decodeAddress(txn.getInput().substring(10));
             Uint256 amount = CPSDecoder.decodeUint256(txn.getInput().substring(75));
 
-            result += ("parent block="+parentBlock+", block size="+blockSize+", timestamp="+timestamp+", miner="+miner+", block hash="+txn.getBlockHash()+", block number="+ txn.getBlockNumber() + ", gasPrice="+txn.getGasPrice()+", gas="+txn.getGas()+" txn: "+ txn.getFrom()+" transfer to "+address.toString() + " amount="+amount.getValue().toString())+"\n";
+             System.out.println("parent block="+parentBlock+", block size="+blockSize+", timestamp="+timestamp+", miner="+miner+", block hash="+txn.getBlockHash()+", block number="+ txn.getBlockNumber() + ", gasPrice="+txn.getGasPrice()+", gas="+txn.getGas()+" txn: "+ txn.getFrom()+" transfer to "+address.toString() + " amount="+amount.getValue().toString())+"\n";
         }
     }
 }
