@@ -144,8 +144,8 @@ public class Controller {
             for (EthBlock.TransactionResult transactionResult : ethBlock.getBlock().getTransactions()){
                 EthBlock.TransactionObject txn = (EthBlock.TransactionObject) transactionResult.get();
                 System.out.println(txn.getTo()+" == " +contractAddress);
-                if(txn.getTo().equalsIgnoreCase(contractAddress)){
-                    if (txn.getInput().substring(0, 10).equals(transferFuncHash.substring(0,10))){
+                if(txn.getTo().equalsIgnoreCase(contractAddress)){//check if this txn is a txn of contract at contractAddress
+                    if (txn.getInput().substring(0, 10).equals(transferFuncHash.substring(0,10))){//check if this is a transfer transaction
                         Address address = CPSDecoder.decodeAddress(txn.getInput().substring(10));
                         Uint256 amount = CPSDecoder.decodeUint256(txn.getInput().substring(75));
 
