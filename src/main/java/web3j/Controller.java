@@ -1,5 +1,10 @@
 package web3j;
 
+import org.bitcoinj.crypto.ChildNumber;
+import org.bitcoinj.crypto.DeterministicKey;
+import org.bitcoinj.crypto.HDUtils;
+import org.bitcoinj.wallet.DeterministicKeyChain;
+import org.bitcoinj.wallet.DeterministicSeed;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -30,7 +35,8 @@ import static org.web3j.tx.Contract.GAS_PRICE;
 @RestController
 public class Controller {
 
-    String contractAddress = "0xFFAB690958a463EB859B6348279A2F5FDdB8Eba1";
+    //CPSTestToken contract
+    String contractAddress = "0x0E3E4BfD5a2572c1E0475029D43Ac0D274466017 ";
     String transferFuncHash = "";
     Function transferFunc = null;
     Web3j web3j = Web3j.build(new HttpService("http://47.88.61.217:8080"));
@@ -38,49 +44,47 @@ public class Controller {
     //a random private key that is publicly known
     //web3j requires a valid key pair, we only do readonly operations but we have to create a credentials otherwise we cannot
     //instantiate a valid contract object of type CPSTestToken1
-    Credentials credentials = Credentials.create("3a1076bf45ab87712ad64ccb3b10217737f7faacbf2872e88fdd9a537d8fe266");
-    CPSTestToken1 cps = CPSTestToken1.load(contractAddress, web3j, credentials, GAS_PRICE, GAS_LIMIT);
+    Credentials credentials;
+    CPSTestToken1 cps;
 
-    //See CPSTestToken1.java for more Ethereum Contract Events
-    Event lockFundExEvent = new Event("LockFundEx",
-            Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}),
-            Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}, new TypeReference<Uint256>() {}));
-    String lockFundExEventHash = EventEncoder.encode(lockFundExEvent);
+    Event transferEvent;
+    String transferEventHash;
 
-    Event unlockFundExEvent = new Event("UnlockFundEx",
-            Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}),
-            Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}, new TypeReference<Uint256>() {}, new TypeReference<Uint256>() {}, new TypeReference<Uint256>() {}));
-    String unlockFundExEventHash = EventEncoder.encode(unlockFundExEvent);
-
-    Event transferEvent = new Event("Transfer",
-            Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}, new TypeReference<Address>() {}),
-            Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
-    String transferEventHash = EventEncoder.encode(transferEvent);
-
-    Observable<CPSTestToken1.TransferEventResponse> transferEventResponseObservable = cps.transferEventObservable(DefaultBlockParameterName.EARLIEST,
-            DefaultBlockParameterName.LATEST);
-    Observable<CPSTestToken1.UnlockFundExEventResponse>  unlockFundExEventResponseObservable = cps.unlockFundExEventObservable(DefaultBlockParameterName.EARLIEST,
-    DefaultBlockParameterName.LATEST);
+    Observable<CPSTestToken1.TransferEventResponse> transferEventResponseObservable;
 
 
     public Controller(){
 
-        //observe all V9CPS transfer events
-        //
-        //if you only want to observe events occurs after a certain block, say 5119110,
-        //change cps.transferEventObservable(DefaultBlockParameterName.EARLIEST,
-        //            DefaultBlockParameterName.LATEST);
-        // to
-        //cps.transferEventObservable(DefaultBlockParameter.valueOf(BigInteger.valueOf(5119110)),
-        //            DefaultBlockParameterName.LATEST);
-       transferEventResponseObservable.subscribe(event -> {
-           //if block hash, block number, tx id are needed, pls customize transferEventObservable of CPSTestToken1.java.
-           System.out.println("\nblock number: "+event.blockNumber+" block hash:"+event.blockHash+" txn:"+event.txnHash+"\n "+event.from + " transfer "+ event.value + " to "+event.to);
-       });
+        try {
+            credentials = Credentials.create("3a1076bf45ab87712ad64ccb3b10217737f7faacbf2872e88fdd9a537d8fe266");
+            cps = CPSTestToken1.load(contractAddress, web3j, credentials, GAS_PRICE, GAS_LIMIT);
 
-        unlockFundExEventResponseObservable.subscribe(event -> {
-            System.out.println("\nblock number: "+event.blockNumber+" block hash:"+event.blockHash+" txn:"+event.txnHash+"\n "+event.from + " unlock "+event.unlockAmount + " at "+event.unlockTimestamp +" deadline="+event.deadline);
-       });
+            transferEvent = new Event("Transfer",
+                    Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {
+                    }, new TypeReference<Address>() {
+                    }),
+                    Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {
+                    }));
+            transferEventHash = EventEncoder.encode(transferEvent);
+
+            transferEventResponseObservable = cps.transferEventObservable(DefaultBlockParameterName.EARLIEST,
+                    DefaultBlockParameterName.LATEST);
+
+            //observe all V9CPS transfer events
+            //
+            //if you only want to observe events occurs after a certain block, say 5119110,
+            //change cps.transferEventObservable(DefaultBlockParameterName.EARLIEST,
+            //            DefaultBlockParameterName.LATEST);
+            // to
+            //cps.transferEventObservable(DefaultBlockParameter.valueOf(BigInteger.valueOf(5119110)),
+            //            DefaultBlockParameterName.LATEST);
+            transferEventResponseObservable.subscribe(event -> {
+                //if block hash, block number, tx id are needed, pls customize transferEventObservable of CPSTestToken1.java.
+                System.out.println(event.from + " transfer "+ event.tokens + " to "+event.to);
+            });
+        }catch(Exception e){
+            e.printStackTrace();
+        }
 
         try {
             EthTransaction transaction = web3j.ethGetTransactionByHash("0x38a8c186f928f6e4afafb0e471cc9b9366e2e92f562edc562a00ef4b75593a92").send();
@@ -184,38 +188,14 @@ public class Controller {
 
                 String eventHash =logObject.getTopics().get(0);
 
-                if (eventHash.compareTo(lockFundExEventHash) == 0){
-
-                    EventValues eventValues = cps.staticExtractEventParameters(lockFundExEvent, logObject);
-
-                    CPSTestToken1.LockFundEventResponse typedResponse = new CPSTestToken1.LockFundEventResponse();
-                    typedResponse.from = (String) eventValues.getIndexedValues().get(0).getValue();
-                    typedResponse.deadline = (BigInteger) eventValues.getNonIndexedValues().get(0).getValue();
-                    typedResponse.amount = (BigInteger) eventValues.getNonIndexedValues().get(1).getValue();
-
-                    result += "\n\nLockFundExEvent: from="+typedResponse.from+" deadline="+typedResponse.deadline+" amount="+typedResponse.amount+" block number="+logObject.getBlockNumber();
-                }
-                else if (eventHash.compareTo(unlockFundExEventHash) == 0){
-
-                    EventValues eventValues = cps.staticExtractEventParameters(unlockFundExEvent, logObject);
-
-                    CPSTestToken1.UnlockFundExEventResponse typedResponse = new CPSTestToken1.UnlockFundExEventResponse();
-                    typedResponse.from = (String) eventValues.getIndexedValues().get(0).getValue();
-                    typedResponse.cycle = (BigInteger) eventValues.getNonIndexedValues().get(0).getValue();
-                    typedResponse.unlockTimestamp = (BigInteger) eventValues.getNonIndexedValues().get(1).getValue();
-                    typedResponse.deadline = (BigInteger) eventValues.getNonIndexedValues().get(2).getValue();
-                    typedResponse.unlockAmount = (BigInteger) eventValues.getNonIndexedValues().get(3).getValue();
-
-                    result += "\n\nUnlockFundExEvent: from="+typedResponse.from+" unlockTimestamp="+typedResponse.unlockTimestamp+" deadline="+typedResponse.deadline+" amount="+typedResponse.unlockAmount+" block number="+logObject.getBlockNumber();
-                }
-                else if(eventHash.compareTo(transferEventHash) == 0){
+               if(eventHash.compareTo(transferEventHash) == 0){
 
                     EventValues eventValues = cps.staticExtractEventParameters(transferEvent, logObject);
 
                     CPSTestToken1.TransferEventResponse typedResponse = new CPSTestToken1.TransferEventResponse();
                     typedResponse.from = (String) eventValues.getIndexedValues().get(0).getValue();
                     typedResponse.to = (String) eventValues.getIndexedValues().get(1).getValue();
-                    typedResponse.value = (BigInteger) eventValues.getNonIndexedValues().get(0).getValue();
+                    typedResponse.tokens = (BigInteger) eventValues.getNonIndexedValues().get(0).getValue();
                 }
             }
         } catch (Exception e) {
@@ -223,5 +203,26 @@ public class Controller {
         }
 
         return result;
+    }
+
+    @RequestMapping("/bip44/{mnemonicsStr}")
+    String bip44(@PathVariable String mnemonicsStr){
+        List<String> mnemonics = new ArrayList<String>();
+        for(String m : mnemonicsStr.split(" ")){
+            if(m.length() > 0)mnemonics.add(m);
+        }
+        // BitcoinJ
+        DeterministicSeed seed = new DeterministicSeed(mnemonics, null, "", 1409478661L);
+        DeterministicKeyChain chain = DeterministicKeyChain.builder().seed(seed).build();
+        List<ChildNumber> keyPath = HDUtils.parsePath("M/44H/60H/0H/0/0");
+        DeterministicKey key = chain.getKeyByPath(keyPath, true);
+        BigInteger privKey = key.getPrivKey();
+
+// Web3j
+        Credentials credentialsM = Credentials.create(privKey.toString(16));
+        String address = credentialsM.getAddress();
+        address.compareTo("0xab5799d7c74d7a52a4a492b55138784ebf95059b");
+
+        return "address="+address + ", private key="+credentialsM.getEcKeyPair().getPrivateKey().toString(16);
     }
 }
