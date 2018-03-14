@@ -206,7 +206,7 @@ public class Controller {
     }
 
     @RequestMapping("/bip44/{mnemonicsStr}")
-    String bip44(@PathVariable String mnemonicsStr){
+    public String bip44(@PathVariable String mnemonicsStr){
         List<String> mnemonics = new ArrayList<String>();
         for(String m : mnemonicsStr.split(" ")){
             if(m.length() > 0)mnemonics.add(m);
